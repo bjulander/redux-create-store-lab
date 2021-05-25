@@ -1,5 +1,31 @@
 // write your createStore function here
 
+function createStore(reducer) {
+  let state;
+  let listeners = [];
+  
+  const subscribe = (listener) => {
+    listeners.push(listener);
+  }
+  
+  const dispatch = (action) => {
+   state = reducer(state, action)
+   listeners.forEach( listener => listener() ) 
+  }
+  
+  dispatch({type:"Initial Action"})
+  
+  const getState = () => {
+    return state
+  }
+  
+  return{
+    getState: getState,
+    dispatch: dispatch,
+    subscribe, subscribe
+  }
+}
+
 function candyReducer(state = [], action) {
   switch (action.type) {
     case 'ADD_CANDY':
@@ -10,6 +36,7 @@ function candyReducer(state = [], action) {
 }
 
 function render() {
+  let store = createStore()
   let container = document.getElementById('container');
   if(store.getState()) {
     container.textContent = store.getState().join(' ')
@@ -20,3 +47,4 @@ function render() {
 
 // Use your createStore function and the functions provided here to create a store.
 // Once the store is created, call an initial dispatch.
+
